@@ -124,6 +124,17 @@ class rizzhomaController{
         }
       }
 
+      static async ambilDonasiById(req, res) {
+        const {donationID} = req.body;
+        rizzhomaModel.ambilDonasiById(donationID,(error, users) => {
+          if (error) {
+            console.error(error);
+            return ResponseHandler.error(res, 500, error.message);
+          }
+          ResponseHandler.sukses(res, 200, users);
+        });
+      }
+
       //Temporary code
       static ambilSemuaPohon(req, res) {
         console.log("Mengambil semua data pohon...");

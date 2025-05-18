@@ -130,6 +130,22 @@ class rizzhomaModel{
         });
       }
 
+      static ambilDonasiById(donationID, callback) {
+        const query = 'SELECT * FROM donation WHERE donationID = ?';
+        const values = [donationID];
+    
+        pool.query(query, values, (error, results) => {
+          if (typeof callback === 'function') {
+            if (error) {
+              return callback(error, null);
+            }
+            callback(null, results);
+          } else {
+            console.error("Callback is not a function:", callback);
+          }
+        });
+      }
+
       //Temporary
       static ambilSemuaPohon(callback) {
         const query = 'SELECT * FROM pohon';

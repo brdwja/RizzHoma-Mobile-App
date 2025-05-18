@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'donation_page2.dart';
 
 class Donation {
   final int id;
@@ -93,69 +95,82 @@ class _DonationPage1State extends State<DonationPage1> {
                   ? donation.amountRaised / donation.goalAmount
                   : 0.0;
 
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                      donation.imageUrl,
-                      width: double.infinity,
-                      height: 150,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+              return GestureDetector(
+                onTap: () async {
+                  // Simpan donationID ke SharedPreferences
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setInt('donationID', donation.id);
+
+                  // Navigasi ke halaman detail
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DonationPage2()), // ganti sesuai page Anda
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        donation.imageUrl,
+                        width: double.infinity,
                         height: 150,
-                        color: Colors.grey,
-                        child: const Icon(Icons.broken_image),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          height: 150,
+                          color: Colors.grey,
+                          child: const Icon(Icons.broken_image),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            donation.title,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(donation.raiser),
-                          const SizedBox(height: 4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Terkumpul'),
-                                  Text(
-                                    'Rp. ${donation.amountRaised}',
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  const Text('Sisa Hari'),
-                                  Text(
-                                    '${donation.daysLeft}',
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          LinearProgressIndicator(
-                            value: progress.clamp(0.0, 1.0),
-                            minHeight: 4,
-                            backgroundColor: Colors.grey,
-                            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF6D93B0)),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              donation.title,
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(donation.raiser),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Terkumpul'),
+                                    Text(
+                                      'Rp. ${donation.amountRaised}',
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    const Text('Sisa Hari'),
+                                    Text(
+                                      '${donation.daysLeft}',
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            LinearProgressIndicator(
+                              value: progress.clamp(0.0, 1.0),
+                              minHeight: 4,
+                              backgroundColor: Colors.grey,
+                              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF6D93B0)),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

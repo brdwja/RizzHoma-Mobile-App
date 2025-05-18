@@ -9,6 +9,7 @@ router.post('/getDataUser', rizzhomaController.ambilUserById);
 router.post('/transaction', rizzhomaController.transaction);
 router.post('/ambilTransaction', rizzhomaController.ambilTransaction);
 router.get('/getDonations',rizzhomaController.ambilDonasi);
+router.post('/getDataDonation', rizzhomaController.ambilDonasiById);
 
 router.get('/pohon', rizzhomaController.ambilSemuaPohon);
 
