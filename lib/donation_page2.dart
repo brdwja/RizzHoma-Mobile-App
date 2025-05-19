@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'donation_page3.dart';
 
 class DonationPage2 extends StatefulWidget {
   const DonationPage2({super.key});
@@ -246,7 +247,10 @@ class _DonationPage2State extends State<DonationPage2> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              // TODO: Navigasi ke page donasi
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DonationPage3()),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.pink,

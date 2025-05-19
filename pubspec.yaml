@@ -43,6 +43,7 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   cached_network_image: ^3.3.0
   mockito: ^5.0.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +70,16 @@ flutter:
   assets:
     - asset/pollution.png
     - asset/tree_drawing.png
+    - asset/ikonbca.png
+    - asset/ikonbni.png
+    - asset/ikonbri.png
+    - asset/ikondana.png
+    - asset/ikongopay.png
+    - asset/ikonmandiri.png
+    - asset/ikonqris.png
+    - asset/ikonshopeepay.png
+    - asset/QR_code_donation.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

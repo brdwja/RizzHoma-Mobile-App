@@ -135,6 +135,24 @@ class rizzhomaController{
         });
       }
 
+      static async createTransaction(req,res){
+        const { userID, donationID, totalAmount, methodName } = req.body;
+        if (!userID || !donationID || !totalAmount || !methodName) {
+            return ResponseHandler.error(res, 400, "Semua field harus diisi");
+        }
+        rizzhomaModel.createTransaction(userID, donationID, totalAmount, methodName, (error, result) => {
+            if (error) {
+            return ResponseHandler.error(res, 400, error.message);
+            }
+            rizzhomaModel.ambilSemuaUser((error, users) => {
+            if (error) {
+                return ResponseHandler.error(res, 400, error.message);
+            }
+            ResponseHandler.sukses(res, 201, users);
+            });
+        });
+      }
+
       //Temporary code
       static ambilSemuaPohon(req, res) {
         console.log("Mengambil semua data pohon...");

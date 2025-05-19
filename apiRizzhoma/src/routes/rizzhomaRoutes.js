@@ -10,6 +10,7 @@ router.post('/transaction', rizzhomaController.transaction);
 router.post('/ambilTransaction', rizzhomaController.ambilTransaction);
 router.get('/getDonations',rizzhomaController.ambilDonasi);
 router.post('/getDataDonation', rizzhomaController.ambilDonasiById);
+router.post('/createTransaction', rizzhomaController.createTransaction);
 
 router.get('/pohon', rizzhomaController.ambilSemuaPohon);
 
