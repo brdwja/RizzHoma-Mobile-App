@@ -162,6 +162,22 @@ class rizzhomaModel{
         });
       }
 
+      static updateAmount(donationID, totalAmount, callback){
+        const query = 'UPDATE donation SET amountRaised = amountRaised+ ? WHERE donationID = ?';
+        const values = [totalAmount, donationID];
+
+        pool.query(query, values, (error, results) => {
+          if (typeof callback === 'function') {
+            if (error) {
+              return callback(error, null);
+            }
+            callback(null, results);
+          } else {
+            console.error("Callback is not a function:", callback);
+          }
+        });
+      }
+
       //Temporary
       static ambilSemuaPohon(callback) {
         const query = 'SELECT * FROM pohon';

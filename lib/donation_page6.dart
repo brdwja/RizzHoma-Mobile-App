@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'donation_page7.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class DonationPage6 extends StatelessWidget {
+class DonationPage6 extends StatefulWidget {
   final String metodePembayaran;
   final int nominal;
   final String nomorPengguna;
@@ -16,10 +19,78 @@ class DonationPage6 extends StatelessWidget {
     this.dukungan = '',
   }) : super(key: key);
 
+  @override
+  State<DonationPage6> createState() => _DonationPage6State();
+}
+
+class _DonationPage6State extends State<DonationPage6> {
+  Map<String, dynamic>? donation;
+  bool isLoading = false;
+
   String getBatasWaktu() {
     final now = DateTime.now().add(const Duration(days: 1));
     return DateFormat('EEEE, d MMMM y HH:mm', 'id_ID').format(now) + ' WIB';
   }
+
+  Future<void> postTransactionDetail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final donationID = prefs.getInt('donationID');
+
+    if (donationID == null) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse('http://192.168.18.14:3000/api/getDataDonation'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'donationID': donationID}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        donation = data['data'][0];
+        isLoading = false;
+      });
+      print('donation: $donation');
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> updateAmount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final donationID = prefs.getInt('donationID');
+
+    if (donationID == null) return;
+
+    final response = await http.post(
+      Uri.parse('http://192.168.18.14:3000/api/updateAmount'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'donationID': donationID,
+        'amount': widget.nominal, 
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        donation = data['data'][0];
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +124,7 @@ class DonationPage6 extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildBox(
                   'Nominal Donasi',
-                  'Rp. ${NumberFormat.decimalPattern('id_ID').format(nominal)}',
+                  'Rp. ${NumberFormat.decimalPattern('id_ID').format(widget.nominal)}',
                 ),
               ],
             ),
@@ -71,13 +142,14 @@ class DonationPage6 extends StatelessWidget {
         ),
         child: ElevatedButton(
           onPressed: () {
+            updateAmount();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder:
                     (context) => DonationPage7(
-                      metodePembayaran: metodePembayaran,
-                      nominal: nominal,
+                      metodePembayaran: widget.metodePembayaran,
+                      nominal: widget.nominal,
                     ),
               ),
             );

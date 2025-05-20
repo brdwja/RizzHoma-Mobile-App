@@ -153,6 +153,21 @@ class rizzhomaController{
         });
       }
 
+      static async updateAmount(req,res){
+        const {donationID, amount} = req.body;
+        if (!donationID || !amount) {
+          return ResponseHandler.error(res, 400, "Semua field harus diisi");
+        }
+        rizzhomaModel.updateAmount(donationID, amount, (error, result) =>
+          {
+            if (error) {
+              return ResponseHandler.error(res, 400, error.message);
+              }
+            ResponseHandler.sukses(res, 200, result);
+          }
+        );
+      }
+
       //Temporary code
       static ambilSemuaPohon(req, res) {
         console.log("Mengambil semua data pohon...");

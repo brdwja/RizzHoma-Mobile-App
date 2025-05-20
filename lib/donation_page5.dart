@@ -22,6 +22,7 @@ class DonationPage5 extends StatefulWidget {
 }
 
 class _DonationPage5State extends State<DonationPage5> {
+  Map<String, dynamic>? donation;
   final String nomorPengguna = '0812345678';
   String? userName;
   String? userEmail;
@@ -94,6 +95,33 @@ class _DonationPage5State extends State<DonationPage5> {
     }
   }
 
+  Future<void> updateAmount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final donationID = prefs.getInt('donationID');
+
+    if (donationID == null) return;
+
+    final response = await http.post(
+      Uri.parse('http://192.168.18.14:3000/api/updateAmount'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'donationID': donationID,
+        'amount': widget.nominal, 
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        donation = data['data'][0];
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   Future<void> fetchUserData() async {
     try {
@@ -164,6 +192,7 @@ class _DonationPage5State extends State<DonationPage5> {
           child: ElevatedButton(
             onPressed: () async {
               await createDonationTransaction();
+              updateAmount();
               Navigator.push(
                 context,
                 MaterialPageRoute(
