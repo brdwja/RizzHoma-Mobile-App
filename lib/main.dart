@@ -84,7 +84,7 @@ class _SignInScreenState extends State<SignInScreen> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.18.14:3000/api/verifyPassword'); 
+    final url = Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/verifyPassword'); 
 
     try {
     final response = await http.post(
@@ -241,8 +241,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.18.14:3000/api/'); 
-    final urlCheckEmail = Uri.parse('http://192.168.18.14:3000/api/checkEmail');
+    final url = Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/'); 
+    final urlCheckEmail = Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/checkEmail');
 
     try {
       final responseCheckEmail = await http.post(

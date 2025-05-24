@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       final response = await http.post(
-        Uri.parse('http://192.168.18.14:3000/api/getDataUser'),
+        Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/getDataUser'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'userID': userId}),
       );

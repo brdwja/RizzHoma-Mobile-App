@@ -54,7 +54,7 @@ class _DonationPage1State extends State<DonationPage1> {
   }
 
   Future<List<Donation>> fetchDonations() async {
-    final response = await http.get(Uri.parse('http://192.168.18.14:3000/api/getDonations'));
+    final response = await http.get(Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/getDonations'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

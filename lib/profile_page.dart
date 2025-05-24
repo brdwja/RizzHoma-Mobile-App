@@ -42,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
 
       final response = await http.post(
-        Uri.parse('http://192.168.18.14:3000/api/getDataUser'),
+        Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/getDataUser'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'userID': userId}),
       );
@@ -72,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
   if (pickedFile != null) {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://192.168.18.14:3000/api/uploadImage'),
+      Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/uploadImage'),
     );
 
     request.files.add(await http.MultipartFile.fromPath('image', pickedFile.path));
@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> updateProfileImage({required String userId, required String imageUrl}) async {
     final response = await http.post(
-      Uri.parse('http://192.168.18.14:3000/api/updateProfile'),
+      Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/updateProfile'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'userID': userId,

@@ -44,7 +44,7 @@ class _DonationPage6State extends State<DonationPage6> {
     }
 
     final response = await http.post(
-      Uri.parse('http://192.168.18.14:3000/api/getDataDonation'),
+      Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/getDataDonation'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'donationID': donationID}),
     );
@@ -70,7 +70,7 @@ class _DonationPage6State extends State<DonationPage6> {
     if (donationID == null) return;
 
     final response = await http.post(
-      Uri.parse('http://192.168.18.14:3000/api/updateAmount'),
+      Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/updateAmount'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'donationID': donationID,

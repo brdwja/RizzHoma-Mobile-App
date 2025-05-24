@@ -78,7 +78,7 @@ class _DonationPage5State extends State<DonationPage5> {
     }
 
     final response = await http.post(
-      Uri.parse('http://192.168.18.14:3000/api/createTransaction'),
+      Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/createTransaction'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'userID': userId,
@@ -102,7 +102,7 @@ class _DonationPage5State extends State<DonationPage5> {
     if (donationID == null) return;
 
     final response = await http.post(
-      Uri.parse('http://192.168.18.14:3000/api/updateAmount'),
+      Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/updateAmount'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'donationID': donationID,
@@ -131,7 +131,7 @@ class _DonationPage5State extends State<DonationPage5> {
       if (userId == null) throw Exception('User ID not found.');
 
       final response = await http.post(
-        Uri.parse('http://192.168.18.14:3000/api/getDataUser'),
+        Uri.parse('https://rizzhoma-mobile-app.onrender.com/api/getDataUser'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'userID': userId}),
       );
