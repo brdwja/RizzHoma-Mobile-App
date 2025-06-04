@@ -8,7 +8,7 @@ const router = express.Router();
 // Setup storage Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'apiRizzhoma/uploads/');
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
