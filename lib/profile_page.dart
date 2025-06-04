@@ -54,6 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
           userName = data['username'];
           userEmail = data['email'];
           isLoading = false;
+          profileImageUrl = data['profileImageUrl'];
         });
       } else {
         throw Exception('Failed to load data');

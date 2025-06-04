@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'news.dart';
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,11 +18,32 @@ class _HomePageState extends State<HomePage> {
   String? userMessage;
   bool isLoading = true;
   String? errorMessage;
+  String? carbonFootprint;
 
   @override
   void initState() {
     super.initState();
     fetchUserData();
+    fetchCarbonFootprint();
+  }
+
+  Future<void> fetchCarbonFootprint() async {
+    final url = Uri.parse('https://charting.numberlens.com/api/teamearth/getdailyco2?authtoken=D43026302F294A5784F7512A8969FE37');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        setState(() {
+          carbonFootprint = jsonResponse['CurrentIndexValueDisplay'];
+        });
+      } else {
+        print('Failed to load carbon data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching carbon data: $e');
+    }
   }
 
   Future<void> fetchUserData() async {
@@ -94,13 +118,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:
-                  ['All', 'Donate', 'News', 'Plant Cart'].map((label) {
-                    return ElevatedButton(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
                       onPressed: () {},
-                      child: Text(label),
+                      child: const Text('Donate'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.black,
@@ -109,9 +135,32 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NewsPage()),
+                        );
+                      },
+                      child: const Text('News'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+
             SizedBox(height: 16),
             Stack(
               children: [
@@ -136,48 +185,65 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Recommended for you',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 8),
-            SizedBox(
-              height: 180,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  _buildPlantCard('Northern Red Oak'),
-                  _buildPlantCard('Bristlecone Pine'),
-                  _buildPlantCard('Sugar Maple'),
-                ],
-              ),
-            ),
-            SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'What should you do?',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildActionBox('Boost your exp', 'Go to Daily'),
-                _buildActionBox('Buy accessories', 'Go to shop'),
+                _buildStatCard(
+                  'Carbon Footprint',
+                  carbonFootprint ?? 'Loading...',  // nilai API
+                  Colors.blue[200]!,
+                ),
+                _buildStatCard(
+                  'AQI - BANDUNG',
+                  '61',
+                  Colors.yellow[700]!,
+                ),
               ],
             ),
+            SizedBox(height: 16),
+            
             SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildStatCard(String label, String value, Color color) {
+  return Container(
+    width: 150,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
+    ),
+    child: Column(
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildPlantCard(String title) {
     return Container(
