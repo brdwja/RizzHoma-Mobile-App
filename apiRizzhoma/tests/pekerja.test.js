@@ -1,6 +1,12 @@
 const request = require('supertest');
 const express = require('express');
 const app = express();
+
+jest.mock('bcrypt', () => ({
+  hash: jest.fn(() => 'mocked-hash'),
+  compare: jest.fn(() => true)
+}));
+
 const PekerjaController = require('../src/controllers/pekerjaController');
 const PekerjaModel = require('../src/models/pekerjaModel');
 
