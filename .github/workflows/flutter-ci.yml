@@ -1,4 +1,4 @@
-name: Flutter CI
+name: Full CI/CD Pipeline (Flutter App & Node.js API)
 
 on:
   push:
@@ -7,40 +7,107 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  # JOB 1: TESTING UNTUK BACKEND API (NODE.JS)
+  test-backend-api:
+    name: Test Backend API
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Setup Java 17
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-    - name: Clone Flutter 3.22.1
-      run: |
-        git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
-        echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
-        ./flutter/bin/flutter --version
-        ./flutter/bin/flutter precache
+      - name: Install Node.js Dependencies
+        # Menjalankan perintah di dalam direktori API
+        working-directory: ./apiRizzhoma
+        run: npm install
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Run Backend Tests
+        working-directory: ./apiRizzhoma
+        run: npm test
 
-    - name: Build debug APK
-      run: flutter build apk --debug
+  # JOB 2: CI CHECKS UNTUK APLIKASI FLUTTER (BERJALAN BERSAMAAN DENGAN JOB 1)
+  ci-flutter-app:
+    name: CI Checks for Flutter App (Test & Inspect)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Diperlukan untuk analisis SonarQube
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Install Node.js dependencies
-      working-directory: ./apiRizzhoma
-      run: npm install
+      - name: Setup Flutter
+        # Menggunakan action ini lebih ringkas daripada clone manual
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
 
-    - name: Run tests
-      run: npm test
+      - name: Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: Run Flutter Tests & Generate Coverage
+        run: flutter test --coverage
+
+      - name: Generate SonarQube Properties
+        # (Anda bisa memasukkan properti SonarQube Anda di sini jika diperlukan)
+        # Contoh:
+        # run: |
+        #   echo "sonar.projectKey=your_project_key" > sonar-project.properties
+        #   ...
+
+      - name: SonarQube Scan
+        # (Anda bisa memasukkan langkah SonarQube scan di sini jika diperlukan)
+        # Contoh:
+        # uses: SonarSource/sonarqube-scan-action@v5
+        # env:
+        #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: echo "Skipping SonarQube for now. Can be added here."
+
+  # JOB 3: DEPLOYMENT APLIKASI FLUTTER
+  deploy-flutter-app:
+    name: Build and Deploy Flutter App
+    # Ketergantungan: Job ini hanya berjalan jika KEDUA job di atas berhasil
+    needs: [test-backend-api, ci-flutter-app]
+    # Kondisi: Hanya berjalan saat push ke branch 'main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+
+      - name: Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
+          name: "Rilis Aplikasi v${{ github.run_number }}"
+          tag_name: "v1.0.${{ github.run_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
