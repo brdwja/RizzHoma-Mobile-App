@@ -8,7 +8,7 @@ jest.mock('../src/models/pekerjaModel', () => ({
   ambilPekerjaById: jest.fn(),
 }));
 
-jest.mock('bcryptjs', () => ({
+jest.mock('bcrypt', () => ({
   hash: jest.fn(() => 'mocked-hash'),
   compare: jest.fn(() => true),
 }));
