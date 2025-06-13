@@ -17,15 +17,22 @@ jobs:
     - name: Set JAVA_HOME to Java 17
       run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
-    - name: Clone Flutter 3.22.1 and add to PATH
+    - name: Clone Flutter 3.22.1 and setup path
       run: |
         git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
         echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
         echo "$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
-        flutter doctor -v
+        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
+        ./flutter/bin/flutter doctor
 
     - name: Install dependencies
-      run: flutter pub get
+      run: |
+        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
+        export PATH="$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin:$PATH"
+        ./flutter/bin/flutter pub get
 
     - name: Build debug APK
-      run: flutter build apk --debug
+      run: |
+        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
+        export PATH="$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin:$PATH"
+        ./flutter/bin/flutter build apk --debug
