@@ -7,22 +7,26 @@ on:
     branches: [ main ]
 
 jobs:
-  continuous_integration:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Install Flutter 3.22.1 (Dart 3.5.3)
+    - name: Clone Flutter 3.22.1 with Dart 3.5.3
       run: |
-        git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
+        git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
         echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-        echo "FLUTTER_HOME=$GITHUB_WORKSPACE/flutter" >> $GITHUB_ENV
-        $GITHUB_WORKSPACE/flutter/bin/flutter doctor
+        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
+        flutter doctor -v
 
-    - name: Run flutter pub get
-      run: $FLUTTER_HOME/bin/flutter pub get
+    - name: Install dependencies
+      run: |
+        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
+        flutter pub get
 
     - name: Build debug APK
-      run: $FLUTTER_HOME/bin/flutter build apk --debug
+      run: |
+        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
+        flutter build apk --debug
