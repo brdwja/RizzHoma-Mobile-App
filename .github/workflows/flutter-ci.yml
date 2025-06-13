@@ -21,6 +21,7 @@ jobs:
       run: |
         git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
         ./flutter/bin/flutter --version
+        ./flutter/bin/flutter precache
 
     - name: Install dependencies
       run: ./flutter/bin/flutter pub get
