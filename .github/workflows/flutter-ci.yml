@@ -42,5 +42,6 @@ jobs:
       working-directory: ./apiRizzhoma
       run: npm install
 
-    - name: Run tests
+    - name: Run backend tests
+      working-directory: ./apiRizzhoma
       run: npm test
