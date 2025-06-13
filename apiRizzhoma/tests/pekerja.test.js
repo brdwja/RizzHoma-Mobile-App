@@ -15,6 +15,7 @@ app.use(express.json());
 // Routing tiruan untuk test
 app.get('/pekerja', PekerjaController.ambilSemuaPekerja);
 app.post('/pekerja/email', PekerjaController.ambilPekerjaByEmail);
+app.get('/pekerja/:id', PekerjaController.ambilPekerjaById); // Tambahan
 
 // Mock model
 jest.mock('../src/models/pekerjaModel');
@@ -67,6 +68,27 @@ describe('PekerjaController', () => {
 
       expect(res.statusCode).toBe(500);
       expect(res.body.message).toBe('DB Error');
+    });
+  });
+
+  describe('ambilPekerjaById', () => {
+    it('should return pekerja by ID', async () => {
+      const mockData = { id: 1, nama: 'John Doe' };
+      PekerjaModel.ambilPekerjaById.mockImplementation((id, cb) => cb(null, mockData));
+
+      const res = await request(app).get('/pekerja/1');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data).toEqual(mockData);
+    });
+
+    it('should handle error when ID not found', async () => {
+      PekerjaModel.ambilPekerjaById.mockImplementation((id, cb) => cb(new Error('Not Found'), null));
+
+      const res = await request(app).get('/pekerja/999');
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.message).toBe('Not Found');
     });
   });
 });
