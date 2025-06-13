@@ -14,25 +14,18 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Set JAVA_HOME to Java 17
+    - name: Set JAVA_HOME
       run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
-    - name: Clone Flutter 3.22.1 and setup path
+    - name: Clone Flutter 3.22.1
       run: |
-        git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.22.1
-        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-        echo "$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
-        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
-        ./flutter/bin/flutter doctor
+        git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
+
+    - name: Run flutter doctor
+      run: ./flutter/bin/flutter doctor -v
 
     - name: Install dependencies
-      run: |
-        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
-        export PATH="$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin:$PATH"
-        ./flutter/bin/flutter pub get
+      run: ./flutter/bin/flutter pub get
 
     - name: Build debug APK
-      run: |
-        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
-        export PATH="$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin:$PATH"
-        ./flutter/bin/flutter build apk --debug
+      run: ./flutter/bin/flutter build apk --debug
