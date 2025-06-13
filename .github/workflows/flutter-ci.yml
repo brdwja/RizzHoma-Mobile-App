@@ -38,7 +38,8 @@ jobs:
       with:
         node-version: 18
 
-    - name: Install dependencies
+    - name: Install Node.js dependencies
+      working-directory: ./apiRizzhoma
       run: npm install
 
     - name: Run tests
