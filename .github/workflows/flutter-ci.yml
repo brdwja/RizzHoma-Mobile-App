@@ -20,9 +20,7 @@ jobs:
     - name: Clone Flutter 3.22.1
       run: |
         git clone https://github.com/flutter/flutter.git --branch 3.22.1 --depth 1
-
-    - name: Run flutter doctor
-      run: ./flutter/bin/flutter doctor -v
+        ./flutter/bin/flutter --version
 
     - name: Install dependencies
       run: ./flutter/bin/flutter pub get
