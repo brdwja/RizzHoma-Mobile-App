@@ -1,8 +1,8 @@
 const request = require('supertest');
 const express = require('express');
 const app = express();
-const PekerjaController = require('/src/controllers/PekerjaController');
-const PekerjaModel = require('/src/models/PekerjaModel');
+const PekerjaController = require('../src/controllers/pekerjaController');
+const PekerjaModel = require('../src/models/pekerjaModel');
 
 app.use(express.json());
 
@@ -11,7 +11,7 @@ app.get('/pekerja', PekerjaController.ambilSemuaPekerja);
 app.post('/pekerja/email', PekerjaController.ambilPekerjaByEmail);
 
 // Mock model
-jest.mock('../src/models/PekerjaModel');
+jest.mock('../src/models/pekerjaModel');
 
 describe('PekerjaController', () => {
   afterEach(() => {
