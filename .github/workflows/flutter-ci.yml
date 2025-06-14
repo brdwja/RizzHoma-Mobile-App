@@ -37,7 +37,8 @@ jobs:
       uses: actions/upload-artifact@V4
       with:
         name: Rizzhoma-apk
-        path: build/app/flutter-apk/app-release.apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
