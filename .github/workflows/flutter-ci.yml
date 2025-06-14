@@ -34,7 +34,7 @@ jobs:
       run: flutter build apk --debug
 
     - name: APK Artifact
-      uses: actions/upload-artifact@V3
+      uses: actions/upload-artifact@V4
       with:
         name: Rizzhoma-apk
         path: build/app/flutter-apk/app-release.apk
