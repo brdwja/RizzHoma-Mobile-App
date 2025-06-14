@@ -33,6 +33,12 @@ jobs:
     - name: Build debug APK
       run: flutter build apk --debug
 
+    - name: APK Artifact
+      uses: actions/upload-artifact@V3
+      with:
+        name: Rizzhoma-apk
+        path: build/app/flutter-apk/app-release.apk
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
